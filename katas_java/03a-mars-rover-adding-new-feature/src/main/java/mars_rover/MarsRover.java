@@ -1,14 +1,14 @@
 package mars_rover;
 
+import java.util.Objects;
+
 public class MarsRover {
 
     private static final int MOVEMENT_DELTA = 1;
-    private Coordinates coordinates;
-    private Direction direction;
+    private Vector vector;
 
     public MarsRover(int x, int y, String direction) {
-        this.coordinates = new Coordinates(x, y);
-        this.direction = Direction.parse(direction);
+        this.vector = new Vector(new Coordinates(x, y), Direction.parse(direction), MOVEMENT_DELTA);
     }
 
     public void receive(String commandsSequence) {
@@ -18,42 +18,41 @@ public class MarsRover {
     }
 
     private void executeCommand(String command) {
+        String commandRepresentation = command;
+        //Command command = createCommand(commandRepresentation);
+        //vector = command.execute(vector);
+
+
         if (command.equals("r")) {
-            direction = direction.turnRight();
+            vector.turnRight();
         } else if (command.equals("l")) {
-            direction = direction.turnLeft();
+            vector.turnLeft();
         } else if (command.equals("f")) {
-            coordinates = direction.moveForward(coordinates, MOVEMENT_DELTA);
+            vector.moveForward();
         } else if (command.equals("b")) {
-            coordinates = direction.moveBackwards(coordinates, MOVEMENT_DELTA);
+            vector.moveBackwards();
         }
     }
+
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MarsRover)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         MarsRover marsRover = (MarsRover) o;
-
-        if (coordinates != null ? !coordinates.equals(marsRover.coordinates) : marsRover.coordinates != null)
-            return false;
-        return direction == marsRover.direction;
-
+        return Objects.equals(vector, marsRover.vector);
     }
 
     @Override
     public int hashCode() {
-        int result = coordinates != null ? coordinates.hashCode() : 0;
-        result = 31 * result + (direction != null ? direction.hashCode() : 0);
-        return result;
+        return Objects.hash(vector);
     }
 
     @Override
     public String toString() {
         return "MarsRover{" +
-            "coordinates=" + coordinates +
-            ", direction=" + direction +
-            '}';
+                "vector=" + vector +
+                '}';
     }
 }
